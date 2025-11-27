@@ -1,6 +1,4 @@
-﻿using System;
-
-using AccessFinance.TransactionSystem.Services.Abstract;
+﻿using AccessFinance.TransactionSystem.Services.Abstract;
 
 namespace AccessFinance.TransactionSystem.Services
 {
@@ -10,7 +8,7 @@ namespace AccessFinance.TransactionSystem.Services
 
         public TransferService(IBankAccountStore accountStore)
         {
-            _accountStore = accountStore;
+            _accountStore = accountStore ?? throw new ArgumentNullException(nameof(accountStore));
         }
 
         public void TransferMoney()
@@ -18,7 +16,9 @@ namespace AccessFinance.TransactionSystem.Services
             Console.Write("Enter your account number (sender): ");
             var senderAccountNumber = Console.ReadLine();
 
-            if (!_accountStore.TryGet(senderAccountNumber!, out var senderAccount) || senderAccount == null)
+            if (string.IsNullOrWhiteSpace(senderAccountNumber) ||
+                !_accountStore.TryGet(senderAccountNumber, out var senderAccount) ||
+                senderAccount == null)
             {
                 Console.WriteLine("Sender account not found.");
                 return;
@@ -27,7 +27,19 @@ namespace AccessFinance.TransactionSystem.Services
             Console.Write("Enter recipient account number: ");
             var recipientAccountNumber = Console.ReadLine();
 
-            if (!_accountStore.TryGet(recipientAccountNumber!, out var recipientAccount) || recipientAccount == null)
+            if (string.IsNullOrWhiteSpace(recipientAccountNumber))
+            {
+                Console.WriteLine("Recipient account not found.");
+                return;
+            }
+
+            if (string.Equals(senderAccountNumber, recipientAccountNumber, StringComparison.Ordinal))
+            {
+                Console.WriteLine("Sender and recipient accounts must be different.");
+                return;
+            }
+
+            if (!_accountStore.TryGet(recipientAccountNumber, out var recipientAccount) || recipientAccount == null)
             {
                 Console.WriteLine("Recipient account not found.");
                 return;
@@ -40,27 +52,19 @@ namespace AccessFinance.TransactionSystem.Services
                 return;
             }
 
-            var firstLock = string.Compare(senderAccountNumber, recipientAccountNumber, StringComparison.Ordinal) < 0
-                ? senderAccount
-                : recipientAccount;
-            var secondLock = firstLock == senderAccount ? recipientAccount : senderAccount;
-
-            lock (firstLock)
+            // Execute transfer with proper locking using AccountLockManager
+            AccountLockManager.ExecuteWithLocks(senderAccountNumber, recipientAccountNumber, () =>
             {
-                lock (secondLock)
+                if (!senderAccount.Withdraw(amount))
                 {
-                    if (senderAccount.Balance < amount)
-                    {
-                        Console.WriteLine("Insufficient balance in sender account.");
-                        return;
-                    }
-
-                    senderAccount.Withdraw(amount);
-                    recipientAccount.Deposit(amount);
-
-                    Console.WriteLine($"Transfer successful. Sender new balance: {senderAccount.Balance:C}, Recipient new balance: {recipientAccount.Balance:C}");
+                    Console.WriteLine("Insufficient balance in sender account.");
+                    return;
                 }
-            }
+
+                recipientAccount.Deposit(amount);
+                Console.WriteLine(
+                    $"Transfer successful. Sender new balance: {senderAccount.Balance:C}, Recipient new balance: {recipientAccount.Balance:C}");
+            }, timeoutMilliseconds: 5_000);
         }
     }
 }
