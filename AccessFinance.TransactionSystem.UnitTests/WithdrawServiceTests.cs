@@ -26,13 +26,11 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n500\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 500m);
 
         // Assert
         Assert.Equal(500m, account.Balance);
@@ -50,13 +48,11 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n1000\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 1000m);
 
         // Assert
         Assert.Equal(0m, account.Balance);
@@ -73,13 +69,11 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n0.01\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 0.01m);
 
         // Assert
         Assert.Equal(999.99m, account.Balance);
@@ -96,13 +90,11 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n123.456789\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 123.456789m);
 
         // Assert
         Assert.Equal(876.543211m, account.Balance);
@@ -119,29 +111,19 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
+        var output = new StringWriter();
+        Console.SetOut(output);
 
         // First withdrawal
-        var input1 = new StringReader("ACC001\n300\n");
-        var output1 = new StringWriter();
-        Console.SetIn(input1);
-        Console.SetOut(output1);
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 300m);
         Assert.Equal(700m, account.Balance);
 
         // Second withdrawal
-        var input2 = new StringReader("ACC001\n200\n");
-        var output2 = new StringWriter();
-        Console.SetIn(input2);
-        Console.SetOut(output2);
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 200m);
         Assert.Equal(500m, account.Balance);
 
         // Third withdrawal
-        var input3 = new StringReader("ACC001\n100\n");
-        var output3 = new StringWriter();
-        Console.SetIn(input3);
-        Console.SetOut(output3);
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 100m);
 
         // Assert
         Assert.Equal(400m, account.Balance);
@@ -157,13 +139,11 @@ public class WithdrawServiceTests
         // Arrange
         var store = CreateTestAccountStore();
         var service = CreateWithdrawService(store);
-        var input = new StringReader("INVALID\n500\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("INVALID", 500m);
 
         // Assert
         var outputText = output.ToString();
@@ -176,17 +156,15 @@ public class WithdrawServiceTests
         // Arrange
         var store = CreateTestAccountStore();
         var service = CreateWithdrawService(store);
-        var input = new StringReader("\n500\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney(null!, 500m);
 
         // Assert
         var outputText = output.ToString();
-        Assert.Contains("Account not found", outputText);
+        Assert.Contains("Account number cannot be empty", outputText);
     }
 
     [Fact]
@@ -195,17 +173,15 @@ public class WithdrawServiceTests
         // Arrange
         var store = CreateTestAccountStore();
         var service = CreateWithdrawService(store);
-        var input = new StringReader("   \n500\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney(string.Empty, 500m);
 
         // Assert
         var outputText = output.ToString();
-        Assert.Contains("Account not found", outputText);
+        Assert.Contains("Account number cannot be empty", outputText);
     }
 
     [Fact]
@@ -214,17 +190,15 @@ public class WithdrawServiceTests
         // Arrange
         var store = CreateTestAccountStore();
         var service = CreateWithdrawService(store);
-        var input = new StringReader("   \n500\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("   ", 500m);
 
         // Assert
         var outputText = output.ToString();
-        Assert.Contains("Account not found", outputText);
+        Assert.Contains("Account number cannot be empty", outputText);
     }
 
     #endregion
@@ -240,13 +214,11 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n0\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 0m);
 
         // Assert
         Assert.Equal(1000m, account.Balance); // Balance unchanged
@@ -263,105 +235,11 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n-100\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
-
-        // Assert
-        Assert.Equal(1000m, account.Balance); // Balance unchanged
-        var outputText = output.ToString();
-        Assert.Contains("Invalid amount", outputText);
-    }
-
-    [Fact]
-    public void WithdrawMoney_NonNumericAmount_ReturnsError()
-    {
-        // Arrange
-        var store = CreateTestAccountStore();
-        var account = new BankAccount("John Doe", 1000m, "ACC001");
-        store.TryAdd("ACC001", account);
-
-        var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\nabc\n");
-        var output = new StringWriter();
-        Console.SetIn(input);
-        Console.SetOut(output);
-
-        // Act
-        service.WithdrawMoney();
-
-        // Assert
-        Assert.Equal(1000m, account.Balance); // Balance unchanged
-        var outputText = output.ToString();
-        Assert.Contains("Invalid amount", outputText);
-    }
-
-    [Fact]
-    public void WithdrawMoney_EmptyAmount_ReturnsError()
-    {
-        // Arrange
-        var store = CreateTestAccountStore();
-        var account = new BankAccount("John Doe", 1000m, "ACC001");
-        store.TryAdd("ACC001", account);
-
-        var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n\n");
-        var output = new StringWriter();
-        Console.SetIn(input);
-        Console.SetOut(output);
-
-        // Act
-        service.WithdrawMoney();
-
-        // Assert
-        Assert.Equal(1000m, account.Balance); // Balance unchanged
-        var outputText = output.ToString();
-        Assert.Contains("Invalid amount", outputText);
-    }
-
-    [Fact]
-    public void WithdrawMoney_WhitespaceAmount_ReturnsError()
-    {
-        // Arrange
-        var store = CreateTestAccountStore();
-        var account = new BankAccount("John Doe", 1000m, "ACC001");
-        store.TryAdd("ACC001", account);
-
-        var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n   \n");
-        var output = new StringWriter();
-        Console.SetIn(input);
-        Console.SetOut(output);
-
-        // Act
-        service.WithdrawMoney();
-
-        // Assert
-        Assert.Equal(1000m, account.Balance); // Balance unchanged
-        var outputText = output.ToString();
-        Assert.Contains("Invalid amount", outputText);
-    }
-
-    [Fact]
-    public void WithdrawMoney_InvalidDecimalFormat_ReturnsError()
-    {
-        // Arrange
-        var store = CreateTestAccountStore();
-        var account = new BankAccount("John Doe", 1000m, "ACC001");
-        store.TryAdd("ACC001", account);
-
-        var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n12.34.56\n");
-        var output = new StringWriter();
-        Console.SetIn(input);
-        Console.SetOut(output);
-
-        // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", -100m);
 
         // Assert
         Assert.Equal(1000m, account.Balance); // Balance unchanged
@@ -382,13 +260,11 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n500\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 500m);
 
         // Assert
         Assert.Equal(100m, account.Balance); // Balance unchanged
@@ -405,13 +281,11 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n100\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 100m);
 
         // Assert
         Assert.Equal(0m, account.Balance); // Balance unchanged
@@ -428,13 +302,11 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n100\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 100m);
 
         // Assert
         Assert.Equal(-50m, account.Balance); // Balance unchanged
@@ -451,13 +323,11 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n100.01\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 100.01m);
 
         // Assert
         Assert.Equal(100m, account.Balance); // Balance unchanged
@@ -478,13 +348,11 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n999999999999\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 999999999999m);
 
         // Assert
         Assert.Equal(1000m, account.Balance); // Balance unchanged
@@ -506,13 +374,11 @@ public class WithdrawServiceTests
 
         // Then withdraw
         var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n300\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 300m);
 
         // Assert
         Assert.Equal(200m, account.Balance);
@@ -529,13 +395,11 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
-        var input = new StringReader("ACC001\n1\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 1m);
 
         // Assert
         Assert.Equal(decimal.MaxValue - 1m, account.Balance);
@@ -552,36 +416,25 @@ public class WithdrawServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateWithdrawService(store);
+        var output = new StringWriter();
+        Console.SetOut(output);
 
         // First withdrawal
-        var input1 = new StringReader("ACC001\n300\n");
-        var output1 = new StringWriter();
-        Console.SetIn(input1);
-        Console.SetOut(output1);
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 300m);
         Assert.Equal(700m, account.Balance);
 
         // Second withdrawal
-        var input2 = new StringReader("ACC001\n200\n");
-        var output2 = new StringWriter();
-        Console.SetIn(input2);
-        Console.SetOut(output2);
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 200m);
         Assert.Equal(500m, account.Balance);
 
         // Third withdrawal - should fail
-        var input3 = new StringReader("ACC001\n600\n");
-        var output3 = new StringWriter();
-        Console.SetIn(input3);
-        Console.SetOut(output3);
-        service.WithdrawMoney();
+        service.WithdrawMoney("ACC001", 600m);
 
         // Assert
         Assert.Equal(500m, account.Balance);
-        var outputText = output3.ToString();
+        var outputText = output.ToString();
         Assert.Contains("Insufficient balance", outputText);
     }
 
     #endregion
 }
-

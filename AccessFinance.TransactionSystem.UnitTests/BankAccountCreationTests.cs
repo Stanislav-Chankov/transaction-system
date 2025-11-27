@@ -98,11 +98,11 @@ public class BankAccountCreationTests
     public void BankAccount_Creation_WithEmptyName_Succeeds()
     {
         // Arrange & Act
-        var account = new BankAccount(string.Empty, 100m, "ACC008");
+        var account = new BankAccount(string.Empty, 100m, "ACC010");
 
         // Assert
         Assert.Equal(string.Empty, account.Name);
-        Assert.Equal("ACC008", account.AccountNumber);
+        Assert.Equal("ACC010", account.AccountNumber);
         Assert.Equal(100m, account.Balance);
     }
 

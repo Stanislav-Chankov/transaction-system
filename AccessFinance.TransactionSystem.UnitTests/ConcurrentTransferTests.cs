@@ -79,7 +79,6 @@ public class ConcurrentTransferTests
             {
                 AccountLockManager.ExecuteWithLocks("ACC001", "ACC002", () =>
                 {
-                    Thread.Sleep(100); // Simulate some work
                     sender1.Withdraw(100m);
                     recipient1.Deposit(100m);
                 }, timeoutMilliseconds: 5000);
@@ -99,7 +98,6 @@ public class ConcurrentTransferTests
             {
                 AccountLockManager.ExecuteWithLocks("ACC003", "ACC004", () =>
                 {
-                    Thread.Sleep(100); // Simulate some work
                     sender2.Withdraw(200m);
                     recipient2.Deposit(200m);
                 }, timeoutMilliseconds: 5000);
@@ -146,7 +144,6 @@ public class ConcurrentTransferTests
             {
                 AccountLockManager.ExecuteWithLocks("ACC001", "ACC002", () =>
                 {
-                    Thread.Sleep(50);
                     account1.Withdraw(100m);
                     account2.Deposit(100m);
                 }, timeoutMilliseconds: 5000);
@@ -166,7 +163,6 @@ public class ConcurrentTransferTests
             {
                 AccountLockManager.ExecuteWithLocks("ACC002", "ACC003", () =>
                 {
-                    Thread.Sleep(50);
                     account2.Withdraw(50m);
                     account3.Deposit(50m);
                 }, timeoutMilliseconds: 5000);
@@ -212,7 +208,6 @@ public class ConcurrentTransferTests
                 AccountLockManager.ExecuteWithLocks("ACC001", "ACC002", () =>
                 {
                     Interlocked.Increment(ref completedTransfers);
-                    Thread.Sleep(50);
                     account1.Withdraw(100m);
                     account2.Deposit(100m);
                 }, timeoutMilliseconds: 5000);
@@ -233,7 +228,6 @@ public class ConcurrentTransferTests
                 AccountLockManager.ExecuteWithLocks("ACC002", "ACC001", () =>
                 {
                     Interlocked.Increment(ref completedTransfers);
-                    Thread.Sleep(50);
                     account2.Withdraw(50m);
                     account1.Deposit(50m);
                 }, timeoutMilliseconds: 5000);
@@ -278,9 +272,6 @@ public class ConcurrentTransferTests
             }
         });
         thread.Start();
-
-        // Wait a moment for thread to acquire locks
-        Thread.Sleep(50);
 
         // Act & Assert - Try to acquire locks with short timeout
         Assert.Throws<TimeoutException>(() =>

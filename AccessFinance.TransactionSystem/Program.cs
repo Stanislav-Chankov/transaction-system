@@ -52,19 +52,65 @@ internal partial class Program
             switch (choice)
             {
                 case MenuOption.CreateAccount:
-                    accountService.CreateAccount();
+                    Console.Write("Enter your name: ");
+                    var name = Console.ReadLine();
+                    Console.Write("Enter initial balance: ");
+                    if (decimal.TryParse(Console.ReadLine(), out var initialBalance))
+                    {
+                        Console.Write("Enter a unique account number: ");
+                        var accountNumber = Console.ReadLine();
+                        accountService.CreateAccount(name!, initialBalance, accountNumber!);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid balance. Please enter a valid number.");
+                    }
                     break;
                 case MenuOption.DepositMoney:
-                    depositService.DepositMoney();
+                    Console.Write("Enter account number: ");
+                    var depositAccountNumber = Console.ReadLine();
+                    Console.Write("Enter deposit amount: ");
+                    if (decimal.TryParse(Console.ReadLine(), out var depositAmount))
+                    {
+                        depositService.DepositMoney(depositAccountNumber!, depositAmount);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid amount. Please enter a valid number.");
+                    }
                     break;
                 case MenuOption.WithdrawMoney:
-                    withdrawService.WithdrawMoney();
+                    Console.Write("Enter account number: ");
+                    var withdrawAccountNumber = Console.ReadLine();
+                    Console.Write("Enter withdrawal amount: ");
+                    if (decimal.TryParse(Console.ReadLine(), out var withdrawAmount))
+                    {
+                        withdrawService.WithdrawMoney(withdrawAccountNumber!, withdrawAmount);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid amount. Please enter a valid number.");
+                    }
                     break;
                 case MenuOption.CheckBalance:
-                    balanceService.CheckBalance();
+                    Console.Write("Enter account number: ");
+                    var balanceAccountNumber = Console.ReadLine();
+                    balanceService.CheckBalance(balanceAccountNumber!);
                     break;
                 case MenuOption.TransferMoney:
-                    transferService.TransferMoney();
+                    Console.Write("Enter your account number (sender): ");
+                    var senderAccountNumber = Console.ReadLine();
+                    Console.Write("Enter recipient account number: ");
+                    var recipientAccountNumber = Console.ReadLine();
+                    Console.Write("Enter transfer amount: ");
+                    if (decimal.TryParse(Console.ReadLine(), out var transferAmount))
+                    {
+                        transferService.TransferMoney(senderAccountNumber!, recipientAccountNumber!, transferAmount);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid amount. Please enter a valid number.");
+                    }
                     break;
                 case MenuOption.Exit:
                     ExitProgram();

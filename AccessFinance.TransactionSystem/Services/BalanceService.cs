@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-
-using AccessFinance.TransactionSystem.Services.Abstract;
+﻿using AccessFinance.TransactionSystem.Services.Abstract;
 
 namespace AccessFinance.TransactionSystem.Services
 {
@@ -10,15 +8,18 @@ namespace AccessFinance.TransactionSystem.Services
 
         public BalanceService(IBankAccountStore accountStore)
         {
-            _accountStore = accountStore;
+            _accountStore = accountStore ?? throw new ArgumentNullException(nameof(accountStore));
         }
 
-        public void CheckBalance()
+        public void CheckBalance(string accountNumber)
         {
-            Console.Write("Enter account number: ");
-            var accountNumber = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(accountNumber))
+            {
+                Console.WriteLine("Account number cannot be empty.");
+                return;
+            }
 
-            if (!_accountStore.TryGet(accountNumber!, out var account) || account == null)
+            if (!_accountStore.TryGet(accountNumber, out var account) || account == null)
             {
                 Console.WriteLine("Account not found.");
                 return;

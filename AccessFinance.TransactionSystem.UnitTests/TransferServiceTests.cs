@@ -26,13 +26,11 @@ public class TransferServiceTests
         store.TryAdd("ACC002", recipient);
 
         var service = CreateTransferService(store);
-        var input = new StringReader("ACC001\nACC002\n200\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.TransferMoney();
+        service.TransferMoney("ACC001", "ACC002", 200m);
 
         // Assert
         Assert.Equal(800m, sender.Balance);
@@ -52,13 +50,11 @@ public class TransferServiceTests
         store.TryAdd("ACC002", recipient);
 
         var service = CreateTransferService(store);
-        var input = new StringReader("ACC001\nACC002\n200\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.TransferMoney();
+        service.TransferMoney("ACC001", "ACC002", 200m);
 
         // Assert
         Assert.Equal(100m, sender.Balance);
@@ -76,13 +72,11 @@ public class TransferServiceTests
         store.TryAdd("ACC002", recipient);
 
         var service = CreateTransferService(store);
-        var input = new StringReader("INVALID\nACC002\n200\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.TransferMoney();
+        service.TransferMoney("INVALID", "ACC002", 200m);
 
         // Assert
         Assert.Equal(500m, recipient.Balance);
@@ -99,13 +93,11 @@ public class TransferServiceTests
         store.TryAdd("ACC001", sender);
 
         var service = CreateTransferService(store);
-        var input = new StringReader("ACC001\nINVALID\n200\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.TransferMoney();
+        service.TransferMoney("ACC001", "INVALID", 200m);
 
         // Assert
         Assert.Equal(1000m, sender.Balance);
@@ -122,13 +114,11 @@ public class TransferServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateTransferService(store);
-        var input = new StringReader("ACC001\nACC001\n200\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.TransferMoney();
+        service.TransferMoney("ACC001", "ACC001", 200m);
 
         // Assert
         Assert.Equal(1000m, account.Balance);
@@ -147,13 +137,11 @@ public class TransferServiceTests
         store.TryAdd("ACC002", recipient);
 
         var service = CreateTransferService(store);
-        var input = new StringReader("ACC001\nACC002\n-100\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.TransferMoney();
+        service.TransferMoney("ACC001", "ACC002", -100m);
 
         // Assert
         Assert.Equal(1000m, sender.Balance);
@@ -173,39 +161,11 @@ public class TransferServiceTests
         store.TryAdd("ACC002", recipient);
 
         var service = CreateTransferService(store);
-        var input = new StringReader("ACC001\nACC002\n0\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.TransferMoney();
-
-        // Assert
-        Assert.Equal(1000m, sender.Balance);
-        Assert.Equal(500m, recipient.Balance);
-        var outputText = output.ToString();
-        Assert.Contains("Invalid amount", outputText);
-    }
-
-    [Fact]
-    public void TransferMoney_NonNumericAmount_ReturnsError()
-    {
-        // Arrange
-        var store = CreateTestAccountStore();
-        var sender = new BankAccount("Sender", 1000m, "ACC001");
-        var recipient = new BankAccount("Recipient", 500m, "ACC002");
-        store.TryAdd("ACC001", sender);
-        store.TryAdd("ACC002", recipient);
-
-        var service = CreateTransferService(store);
-        var input = new StringReader("ACC001\nACC002\nabc\n");
-        var output = new StringWriter();
-        Console.SetIn(input);
-        Console.SetOut(output);
-
-        // Act
-        service.TransferMoney();
+        service.TransferMoney("ACC001", "ACC002", 0m);
 
         // Assert
         Assert.Equal(1000m, sender.Balance);
@@ -223,18 +183,16 @@ public class TransferServiceTests
         store.TryAdd("ACC002", recipient);
 
         var service = CreateTransferService(store);
-        var input = new StringReader("\nACC002\n200\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.TransferMoney();
+        service.TransferMoney("", "ACC002", 200m);
 
         // Assert
         Assert.Equal(500m, recipient.Balance);
         var outputText = output.ToString();
-        Assert.Contains("Sender account not found", outputText);
+        Assert.Contains("Sender account number cannot be empty", outputText);
     }
 
     [Fact]
@@ -246,18 +204,15 @@ public class TransferServiceTests
         store.TryAdd("ACC001", sender);
 
         var service = CreateTransferService(store);
-        var input = new StringReader("ACC001\n\n200\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.TransferMoney();
+        service.TransferMoney("ACC001", "", 200m);
 
         // Assert
         Assert.Equal(1000m, sender.Balance);
         var outputText = output.ToString();
-        Assert.Contains("Recipient account not found", outputText);
+        Assert.Contains("Recipient account number cannot be empty", outputText);
     }
 }
-

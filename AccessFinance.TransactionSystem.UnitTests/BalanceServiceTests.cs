@@ -26,13 +26,11 @@ public class BalanceServiceTests
         store.TryAdd("ACC001", account);
 
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC001\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC001");
 
         // Assert
         var outputText = output.ToString();
@@ -50,13 +48,11 @@ public class BalanceServiceTests
         store.TryAdd("ACC002", account);
 
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC002\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC002");
 
         // Assert
         var outputText = output.ToString();
@@ -74,13 +70,11 @@ public class BalanceServiceTests
         store.TryAdd("ACC004", account);
 
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC004\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC004");
 
         // Assert
         var outputText = output.ToString();
@@ -98,13 +92,11 @@ public class BalanceServiceTests
         store.TryAdd("ACC005", account);
 
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC005\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC005");
 
         // Assert
         var outputText = output.ToString();
@@ -121,13 +113,11 @@ public class BalanceServiceTests
         store.TryAdd("ACC006", account);
 
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC006\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC006");
 
         // Assert
         var outputText = output.ToString();
@@ -144,13 +134,11 @@ public class BalanceServiceTests
         store.TryAdd("ACC007", account);
 
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC007\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC007");
 
         // Assert
         var outputText = output.ToString();
@@ -167,13 +155,11 @@ public class BalanceServiceTests
         store.TryAdd("ACC008", account);
 
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC008\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC008");
 
         // Assert
         var outputText = output.ToString();
@@ -190,13 +176,11 @@ public class BalanceServiceTests
         store.TryAdd("ACC009", account);
 
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC009\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC009");
 
         // Assert
         var outputText = output.ToString();
@@ -213,13 +197,11 @@ public class BalanceServiceTests
         store.TryAdd("ACC010", account);
 
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC010\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC010");
 
         // Assert
         var outputText = output.ToString();
@@ -236,13 +218,11 @@ public class BalanceServiceTests
         store.TryAdd("ACC011", account);
 
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC011\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC011");
 
         // Assert
         var outputText = output.ToString();
@@ -263,21 +243,17 @@ public class BalanceServiceTests
         var service = CreateBalanceService(store);
 
         // Check first account
-        var input1 = new StringReader("ACC012\n");
         var output1 = new StringWriter();
-        Console.SetIn(input1);
         Console.SetOut(output1);
-        service.CheckBalance();
+        service.CheckBalance("ACC012");
         var outputText1 = output1.ToString();
         Assert.Contains("Account Holder: Account One", outputText1);
         Assert.Contains("1,000.00", outputText1);
 
         // Check second account
-        var input2 = new StringReader("ACC013\n");
         var output2 = new StringWriter();
-        Console.SetIn(input2);
         Console.SetOut(output2);
-        service.CheckBalance();
+        service.CheckBalance("ACC013");
 
         // Assert
         var outputText2 = output2.ToString();
@@ -295,13 +271,11 @@ public class BalanceServiceTests
         // Arrange
         var store = CreateTestAccountStore();
         var service = CreateBalanceService(store);
-        var input = new StringReader("INVALID\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("INVALID");
 
         // Assert
         var outputText = output.ToString();
@@ -316,17 +290,15 @@ public class BalanceServiceTests
         // Arrange
         var store = CreateTestAccountStore();
         var service = CreateBalanceService(store);
-        var input = new StringReader("\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("");
 
         // Assert
         var outputText = output.ToString();
-        Assert.Contains("Account not found", outputText);
+        Assert.Contains("Account number cannot be empty.", outputText);
         Assert.DoesNotContain("Account Holder:", outputText);
         Assert.DoesNotContain("Current Balance", outputText);
     }
@@ -337,17 +309,15 @@ public class BalanceServiceTests
         // Arrange
         var store = CreateTestAccountStore();
         var service = CreateBalanceService(store);
-        var input = new StringReader("   \n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("   ");
 
         // Assert
         var outputText = output.ToString();
-        Assert.Contains("Account not found", outputText);
+        Assert.Contains("Account number cannot be empty.", outputText);
         Assert.DoesNotContain("Account Holder:", outputText);
         Assert.DoesNotContain("Current Balance", outputText);
     }
@@ -358,17 +328,15 @@ public class BalanceServiceTests
         // Arrange
         var store = CreateTestAccountStore();
         var service = CreateBalanceService(store);
-        var input = new StringReader("   \n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("   ");
 
         // Assert
         var outputText = output.ToString();
-        Assert.Contains("Account not found", outputText);
+        Assert.Contains("Account number cannot be empty.", outputText);
         Assert.DoesNotContain("Account Holder:", outputText);
         Assert.DoesNotContain("Current Balance", outputText);
     }
@@ -379,13 +347,11 @@ public class BalanceServiceTests
         // Arrange
         var store = CreateTestAccountStore();
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC-001_ABC\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC-001_ABC");
 
         // Assert
         var outputText = output.ToString();
@@ -410,13 +376,11 @@ public class BalanceServiceTests
 
         // Then check balance
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC014\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC014");
 
         // Assert
         var outputText = output.ToString();
@@ -439,13 +403,11 @@ public class BalanceServiceTests
 
         // Then check balance
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC015\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC015");
 
         // Assert
         var outputText = output.ToString();
@@ -470,13 +432,11 @@ public class BalanceServiceTests
 
         // Then check balance
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC016\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC016");
 
         // Assert
         var outputText = output.ToString();
@@ -496,20 +456,16 @@ public class BalanceServiceTests
         var service = CreateBalanceService(store);
 
         // First check
-        var input1 = new StringReader("ACC017\n");
         var output1 = new StringWriter();
-        Console.SetIn(input1);
         Console.SetOut(output1);
-        service.CheckBalance();
+        service.CheckBalance("ACC017");
         var outputText1 = output1.ToString();
         Assert.Contains("1,000.00", outputText1);
 
         // Second check
-        var input2 = new StringReader("ACC017\n");
         var output2 = new StringWriter();
-        Console.SetIn(input2);
         Console.SetOut(output2);
-        service.CheckBalance();
+        service.CheckBalance("ACC017");
 
         // Assert
         var outputText2 = output2.ToString();
@@ -531,13 +487,11 @@ public class BalanceServiceTests
 
         // Then check balance
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC018\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC018");
 
         // Assert
         var outputText = output.ToString();
@@ -556,13 +510,11 @@ public class BalanceServiceTests
         store.TryAdd("ACC021", account);
 
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC021\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC021");
 
         // Assert
         var outputText = output.ToString();
@@ -579,13 +531,11 @@ public class BalanceServiceTests
         store.TryAdd("ACC001中文", account);
 
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC001中文\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC001中文");
 
         // Assert
         var outputText = output.ToString();
@@ -602,13 +552,11 @@ public class BalanceServiceTests
         store.TryAdd("ACC022", account);
 
         var service = CreateBalanceService(store);
-        var input = new StringReader("ACC022\n");
         var output = new StringWriter();
-        Console.SetIn(input);
         Console.SetOut(output);
 
         // Act
-        service.CheckBalance();
+        service.CheckBalance("ACC022");
 
         // Assert
         var outputText = output.ToString();
@@ -620,4 +568,6 @@ public class BalanceServiceTests
 
     #endregion
 }
+
+
 

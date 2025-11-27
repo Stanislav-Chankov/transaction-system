@@ -8,24 +8,26 @@ namespace AccessFinance.TransactionSystem.Services
 
         public DepositService(IBankAccountStore accountStore)
         {
-            _accountStore = accountStore;
+            _accountStore = accountStore ?? throw new ArgumentNullException(nameof(accountStore));
         }
 
-        public void DepositMoney()
+        public void DepositMoney(string accountNumber, decimal amount)
         {
-            Console.Write("Enter account number: ");
-            var accountNumber = Console.ReadLine();
-
-            if (!_accountStore.TryGet(accountNumber!, out var account) || account == null)
+            if (string.IsNullOrWhiteSpace(accountNumber))
             {
-                Console.WriteLine("Account not found.");
+                Console.WriteLine("Account number cannot be empty.");
                 return;
             }
 
-            Console.Write("Enter deposit amount: ");
-            if (!decimal.TryParse(Console.ReadLine(), out var amount) || amount <= 0)
+            if (amount <= 0)
             {
                 Console.WriteLine("Invalid amount. Please enter a positive number.");
+                return;
+            }
+
+            if (!_accountStore.TryGet(accountNumber, out var account) || account == null)
+            {
+                Console.WriteLine("Account not found.");
                 return;
             }
 

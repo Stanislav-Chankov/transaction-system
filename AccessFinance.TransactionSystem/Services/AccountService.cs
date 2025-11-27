@@ -8,32 +8,31 @@ namespace AccessFinance.TransactionSystem.Services
 
         public AccountService(IBankAccountStore accountStore)
         {
-            _accountStore = accountStore;
+            _accountStore = accountStore ?? throw new ArgumentNullException(nameof(accountStore));
         }
 
-        public void CreateAccount()
+        public void CreateAccount(string name, decimal initialBalance, string accountNumber)
         {
-            Console.Write("Enter your name: ");
-            var name = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(accountNumber))
+            {
+                Console.WriteLine("Account number cannot be empty.");
+                return;
+            }
 
-            Console.Write("Enter initial balance: ");
-            if (!decimal.TryParse(Console.ReadLine(), out var initialBalance) || initialBalance < 0)
+            if (initialBalance < 0)
             {
                 Console.WriteLine("Invalid balance. Please enter a non-negative number.");
                 return;
             }
 
-            Console.Write("Enter a unique account number: ");
-            var accountNumber = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(accountNumber) || _accountStore.ContainsKey(accountNumber!))
+            if (_accountStore.ContainsKey(accountNumber))
             {
-                Console.WriteLine("Account number is invalid or already exists.");
+                Console.WriteLine("Account number already exists.");
                 return;
             }
 
             var account = new BankAccount(name, initialBalance, accountNumber);
-            if (_accountStore.TryAdd(accountNumber!, account))
+            if (_accountStore.TryAdd(accountNumber, account))
             {
                 Console.WriteLine("Account created successfully.");
             }

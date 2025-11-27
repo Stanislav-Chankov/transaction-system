@@ -2,5 +2,5 @@ namespace AccessFinance.TransactionSystem.Services.Abstract;
 
 public interface IDepositService
 {
-    void DepositMoney();
+    void DepositMoney(string accountNumber, decimal amount);
 }

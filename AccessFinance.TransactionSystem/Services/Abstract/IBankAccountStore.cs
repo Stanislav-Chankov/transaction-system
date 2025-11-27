@@ -1,5 +1,3 @@
-using AccessFinance.TransactionSystem.Services;
-
 namespace AccessFinance.TransactionSystem.Services.Abstract
 {
     public interface IBankAccountStore

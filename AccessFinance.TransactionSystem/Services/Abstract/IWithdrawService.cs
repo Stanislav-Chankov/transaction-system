@@ -2,5 +2,5 @@ namespace AccessFinance.TransactionSystem.Services.Abstract;
 
 public interface IWithdrawService
 {
-    void WithdrawMoney();
+    void WithdrawMoney(string accountNumber, decimal amount);
 }

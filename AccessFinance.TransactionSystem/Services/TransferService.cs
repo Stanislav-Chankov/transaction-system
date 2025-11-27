@@ -11,25 +11,17 @@ namespace AccessFinance.TransactionSystem.Services
             _accountStore = accountStore ?? throw new ArgumentNullException(nameof(accountStore));
         }
 
-        public void TransferMoney()
+        public void TransferMoney(string senderAccountNumber, string recipientAccountNumber, decimal amount)
         {
-            Console.Write("Enter your account number (sender): ");
-            var senderAccountNumber = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(senderAccountNumber) ||
-                !_accountStore.TryGet(senderAccountNumber, out var senderAccount) ||
-                senderAccount == null)
+            if (string.IsNullOrWhiteSpace(senderAccountNumber))
             {
-                Console.WriteLine("Sender account not found.");
+                Console.WriteLine("Sender account number cannot be empty.");
                 return;
             }
 
-            Console.Write("Enter recipient account number: ");
-            var recipientAccountNumber = Console.ReadLine();
-
             if (string.IsNullOrWhiteSpace(recipientAccountNumber))
             {
-                Console.WriteLine("Recipient account not found.");
+                Console.WriteLine("Recipient account number cannot be empty.");
                 return;
             }
 
@@ -39,16 +31,21 @@ namespace AccessFinance.TransactionSystem.Services
                 return;
             }
 
-            if (!_accountStore.TryGet(recipientAccountNumber, out var recipientAccount) || recipientAccount == null)
+            if (amount <= 0)
             {
-                Console.WriteLine("Recipient account not found.");
+                Console.WriteLine("Invalid amount. Please enter a positive number.");
                 return;
             }
 
-            Console.Write("Enter transfer amount: ");
-            if (!decimal.TryParse(Console.ReadLine(), out var amount) || amount <= 0)
+            if (!_accountStore.TryGet(senderAccountNumber, out var senderAccount) || senderAccount == null)
             {
-                Console.WriteLine("Invalid amount. Please enter a positive number.");
+                Console.WriteLine("Sender account not found.");
+                return;
+            }
+
+            if (!_accountStore.TryGet(recipientAccountNumber, out var recipientAccount) || recipientAccount == null)
+            {
+                Console.WriteLine("Recipient account not found.");
                 return;
             }
 
