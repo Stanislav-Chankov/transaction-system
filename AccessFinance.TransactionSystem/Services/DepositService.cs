@@ -1,6 +1,4 @@
-﻿using System;
-
-using AccessFinance.TransactionSystem.Services.Abstract;
+﻿using AccessFinance.TransactionSystem.Services.Abstract;
 
 namespace AccessFinance.TransactionSystem.Services
 {

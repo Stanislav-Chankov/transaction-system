@@ -65,7 +65,6 @@ public sealed class AccountLockManager
         var firstLock = GetLock(orderedAccounts[0]);
         var secondLock = GetLock(orderedAccounts[1]);
 
-        // Use Monitor.TryEnter with timeout for production-ready deadlock prevention
         bool firstLockTaken = false;
         bool secondLockTaken = false;
 
