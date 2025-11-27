@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AccessFinance.TransactionSystem": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
