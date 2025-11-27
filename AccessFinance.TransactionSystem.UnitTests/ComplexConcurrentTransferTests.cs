@@ -1,12 +1,6 @@
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AccessFinance.TransactionSystem;
+
 using AccessFinance.TransactionSystem.Services;
-using Xunit;
 
 namespace AccessFinance.TransactionSystem.UnitTests;
 

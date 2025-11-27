@@ -1,9 +1,5 @@
-using System;
-using System.IO;
-using AccessFinance.TransactionSystem;
 using AccessFinance.TransactionSystem.Services;
 using AccessFinance.TransactionSystem.Services.Abstract;
-using Xunit;
 
 namespace AccessFinance.TransactionSystem.UnitTests;
 

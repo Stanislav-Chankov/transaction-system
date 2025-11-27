@@ -1,9 +1,4 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AccessFinance.TransactionSystem;
 using AccessFinance.TransactionSystem.Services;
-using Xunit;
 
 namespace AccessFinance.TransactionSystem.UnitTests;
 

@@ -1,6 +1,4 @@
-using System;
 using AccessFinance.TransactionSystem.Services;
-using Xunit;
 
 namespace AccessFinance.TransactionSystem.UnitTests;
 
